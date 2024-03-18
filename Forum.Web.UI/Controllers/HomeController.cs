@@ -1,4 +1,5 @@
-﻿using Forum.Web.UI.Models;
+﻿using Forum.Web.UI.Clients.Users;
+using Forum.Web.UI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,15 +7,21 @@ namespace Forum.Web.UI.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IUserClient _userClient;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            IUserClient userClient,
+            ILogger<HomeController> logger)
         {
+            _userClient = userClient;
             _logger = logger;
         }
 
         public IActionResult Index()
         {
+            //var result = await _userClient.GetListAsync();
+
             return View();
         }
 
