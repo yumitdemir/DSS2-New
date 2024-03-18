@@ -1,4 +1,6 @@
-﻿namespace Forum.Domain.Models
+﻿using System;
+
+namespace Forum.Domain.Models
 {
     public abstract class DomainEntity : IDomainEntity
     {

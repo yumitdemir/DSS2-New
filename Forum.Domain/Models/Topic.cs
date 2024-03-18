@@ -1,4 +1,6 @@
-﻿namespace Forum.Domain.Models
+﻿using System.Collections.Generic;
+
+namespace Forum.Domain.Models
 {
     public class Topic : DomainEntity
     {

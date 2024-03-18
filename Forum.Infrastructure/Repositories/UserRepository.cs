@@ -1,6 +1,8 @@
 ﻿using Forum.Application.Repositories;
 using Forum.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Forum.Infrastructure.Repositories
 {

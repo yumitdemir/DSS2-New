@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Forum.Application.Services
 {
@@ -19,7 +20,7 @@ namespace Forum.Application.Services
         }
 
         public async Task<(long? Id, string Error)> CreateUserAsync(
-            UserDto user, 
+            CreateUserDto user, 
             Role role = Role.User)
         {
             if (!user.ConfirmPassword!.Equals(user.Password))
@@ -55,12 +56,12 @@ namespace Forum.Application.Services
             };
 
             await _userRepository.SaveAsync(dbUser);
-            return (dbUser.Id, "Successfully created user!");
+            return (dbUser.Id, string.Empty);
         }
 
         public async Task<(long? Id, string Error)> UpdatedUserAsync(
             long? id,
-            UserDto user)
+            UpdateUserDto user)
         {
             var exist = await _userRepository
                 .IsExistingUsernameAsync(id!.Value, user.Username!);
@@ -93,7 +94,69 @@ namespace Forum.Application.Services
 
             await _userRepository.UpdateAsync(dbUser);
 
-            return (dbUser.Id, "Successfully created user!");
+            return (dbUser.Id, string.Empty);
+        }
+
+        public async Task<(UserDetailsDto? User, string Error)> DeleteUserAsync(
+            long? id)
+        {
+            var user = await _userRepository.GetByIdAsync(id!.Value);
+
+            if (user is null)
+            {
+                return (null, "Invalid user id!");
+            }
+
+            user.IsDeleted = true;
+
+            await _userRepository.UpdateAsync(user);
+
+            var dtoUser = new UserDetailsDto
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                Username = user.Username,
+            };
+
+            return (dtoUser, string.Empty);
+        }
+
+        public async Task<(IEnumerable<UserShortDto> Users, string Error)> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+
+            var dtUsers = users.Select(e => new UserShortDto
+            {
+                Id = e.Id,
+                FullName = string.Format("{0} {1}", e.FirstName, e.LastName),
+                Username = e.Username
+            })
+            .ToArray();
+
+            return (dtUsers, string.Empty);
+        }
+
+        public async Task<(UserDetailsDto? User, string Error)> GetUsersAsync(long? userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user is null)
+            {
+                return (null, $"User with id {userId} not found");
+            }
+
+            var dtoUser = new UserDetailsDto
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                Username = user.Username,
+            };
+
+            return (dtoUser, string.Empty);
         }
 
         private string GetHash(string text)

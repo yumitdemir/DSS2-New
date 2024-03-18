@@ -40,6 +40,10 @@ namespace Forum.Infrastructure.Mappings
                 .HasColumnName("last_name")
                 .HasMaxLength(256);
 
+            builder.Property(e => e.IsDeleted)
+               .HasColumnName("is_deleted")
+               .HasDefaultValue(false);
+
             builder.Property(e => e.Role)
                 .HasColumnName("role")
                 .HasConversion<string>()

@@ -1,4 +1,5 @@
 ﻿using Forum.Domain.Models;
+using System.Threading.Tasks;
 
 namespace Forum.Application.Repositories
 {
