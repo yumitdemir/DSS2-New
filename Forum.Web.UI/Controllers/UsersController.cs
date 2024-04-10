@@ -1,8 +1,11 @@
-﻿using Forum.Web.UI.Models;
+﻿using Forum.Web.UI.Clients.Users;
+using Forum.Web.UI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forum.Web.UI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         // GET: UsersContrller

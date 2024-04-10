@@ -49,6 +49,12 @@ namespace Forum.Infrastructure.Mappings
                 .HasConversion<string>()
                 .HasDefaultValue(Role.User);
 
+            builder.Property(e => e.UpdateDate)
+                .HasColumnName("update_date");
+
+            builder.Property(e => e.CreateDate)
+               .HasColumnName("create_date");
+
             builder.HasMany(e => e.Topics)
                 .WithOne(e => e.Creator)
                 .HasForeignKey(e => e.CreatorId);

@@ -1,3 +1,4 @@
+using Forum.Web.UI.Clients.Authentication;
 using Forum.Web.UI.Clients.Users;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +46,8 @@ namespace Forum.Web.UI
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(setting =>
                 {
+                    setting.AccessDeniedPath = "/Home/Index";
+                    setting.LoginPath = "/Home/Index";
                     setting.Cookie.IsEssential = true;
                     setting.Cookie.HttpOnly = true;
                     setting.SlidingExpiration = true;
@@ -60,6 +63,7 @@ namespace Forum.Web.UI
             });
 
             builder.Services.RegisterClient<IUserClient>("/api/users");
+            builder.Services.RegisterClient<IAuthenticationClient>("/api/authentication");
 
             var app = builder.Build();
 

@@ -1,5 +1,6 @@
 ﻿using Forum.Application.Dto;
 using Forum.Application.Services;
+using Forum.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -53,16 +54,17 @@ namespace Forum.Web.Api.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost("{role}")]
         public async Task<IActionResult> CreateAsync(
-            [FromBody, Required] CreateUserDto user)
+            [FromBody, Required] CreateUserDto user,
+            [FromRoute] Role role)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
 
-            var userId = await _userService.CreateUserAsync(user);
+            var userId = await _userService.CreateUserAsync(user, role);
             if (!string.IsNullOrEmpty(userId.Error))
             {
                 return BadRequest(userId.Error);

@@ -1,0 +1,44 @@
+version: '3.4'
+
+services:
+  web-api:
+    container_name: web-api
+    build:
+      context: .
+      dockerfile: ./Forum.Web.Api/Dockerfile
+    ports:
+      - 5000:80
+    environment:
+      - DatabaseSettings__ConnectionString=Server=data;Port=5432;Database=forum;User Id=postgres;Password=postgres;
+      - DatabaseSettings__MigrationTable=changelog
+      - DatabaseSettings__EnableMigrations=true
+    networks:
+      - forum-network
+  web-ui:
+    container_name: web-ui
+    build:
+      context: .
+      dockerfile: ./Forum.Web.UI/Dockerfile
+    ports:
+      - 5001:80
+    environment:
+      - BackendApi__Address=http://web-api
+    networks:
+      - forum-network
+  data:
+    container_name: data
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    volumes:
+      - 'data_vlume:/var/lib/postgresql/data'
+    ports:
+      - 5432:5432
+    networks:
+      - forum-network
+networks:
+  forum-network: null
+volumes:
+  data_vlume: null
+  

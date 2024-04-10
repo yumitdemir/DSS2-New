@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.Web.Api", "Forum.Web.Api\Forum.Web.Api.csproj", "{A56E4FBB-9AB7-41BF-9DCC-01161C457495}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Web.Api", "Forum.Web.Api\Forum.Web.Api.csproj", "{A56E4FBB-9AB7-41BF-9DCC-01161C457495}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.Domain", "Forum.Domain\Forum.Domain.csproj", "{319B7072-A0BB-4810-95C2-62209E98048D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Domain", "Forum.Domain\Forum.Domain.csproj", "{319B7072-A0BB-4810-95C2-62209E98048D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.Application", "Forum.Application\Forum.Application.csproj", "{CD0C43A1-A1E2-4990-A013-9E3D9722BB6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Application", "Forum.Application\Forum.Application.csproj", "{CD0C43A1-A1E2-4990-A013-9E3D9722BB6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.Infrastructure", "Forum.Infrastructure\Forum.Infrastructure.csproj", "{F41BCAD7-2DA6-4FEB-A7E4-33DB5FCFF8BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Infrastructure", "Forum.Infrastructure\Forum.Infrastructure.csproj", "{F41BCAD7-2DA6-4FEB-A7E4-33DB5FCFF8BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forum.Web.UI", "Forum.Web.UI\Forum.Web.UI.csproj", "{3182F117-8C18-4B2E-9F77-D50D9CA20FEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forum.Web.UI", "Forum.Web.UI\Forum.Web.UI.csproj", "{3182F117-8C18-4B2E-9F77-D50D9CA20FEE}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{EC877EB1-06F1-40A3-80ED-7C8DE9D573A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{3182F117-8C18-4B2E-9F77-D50D9CA20FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3182F117-8C18-4B2E-9F77-D50D9CA20FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3182F117-8C18-4B2E-9F77-D50D9CA20FEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC877EB1-06F1-40A3-80ED-7C8DE9D573A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC877EB1-06F1-40A3-80ED-7C8DE9D573A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC877EB1-06F1-40A3-80ED-7C8DE9D573A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC877EB1-06F1-40A3-80ED-7C8DE9D573A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -20,7 +20,8 @@ namespace Forum.Infrastructure
             services.AddDbContext<DatabaseContext>((provider, options) =>
             {
                 var settings = provider.GetRequiredService<IOptions<DatabaseSettings>>();
-                options.UseSqlite(settings.Value.ConnectionString, config =>
+                
+                options.UseNpgsql(settings.Value.ConnectionString, config =>
                 {
                     config.MigrationsHistoryTable(settings.Value.MigrationTable);
 
@@ -37,13 +38,16 @@ namespace Forum.Infrastructure
 
         public static IHost UseMigrations(this IHost app)
         {
-            var settings = app.Services.GetRequiredService<IOptions<DatabaseSettings>>();
+            var settings = app.Services
+                .GetRequiredService<IOptions<DatabaseSettings>>();
 
             if (settings.Value.EnableMigrations)
             {
                 using (var scope = app.Services.CreateScope())
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+                    var context = scope.ServiceProvider
+                        .GetRequiredService<DatabaseContext>();
+
                     context.Database.Migrate();
                 }
             }

@@ -10,12 +10,70 @@ using System.Threading.Tasks;
 
 namespace Forum.Application.Services
 {
-    public class UserService
+    public class AuthenticationService
     {
+        private readonly PasswordService _passwordService;
         private readonly IUserRepository _userRepository;
 
-        public UserService(IUserRepository userRepository) 
+        public AuthenticationService(
+            PasswordService passwordService,
+            IUserRepository userRepository)
         {
+            _passwordService = passwordService;
+            _userRepository = userRepository;
+        }
+
+        public async Task<(UserDetailsDto? User, string? Error)> AuthenticateAsync(
+            string? username, 
+            string? password)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return (null, "Invalid username");
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                return (null, "Invalid password");
+            }
+
+            var user = await _userRepository.GetByUsernameAsync(username);
+
+            if (user is null)
+            {
+                return (null, $"User with username {username} does not exist");
+            }
+
+            var passwordHash = _passwordService.GetHash(password);
+            if (!passwordHash.Equals(user.Password))
+            {
+                return (null, $"Invalid user password");
+            }
+
+            var userDto = new UserDetailsDto
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                Id = user.Id,
+                LastName = user.LastName,
+                Username = user.Username,
+                Role = user.Role,
+            };
+
+            return (userDto, null);
+        }
+    }
+
+    public class UserService
+    {
+        private readonly PasswordService _passwordService;
+        private readonly IUserRepository _userRepository;
+
+        public UserService(
+            PasswordService passwordService, 
+            IUserRepository userRepository) 
+        {
+            _passwordService = passwordService;
             _userRepository = userRepository;
         }
 
@@ -52,7 +110,7 @@ namespace Forum.Application.Services
                 LastName = user.LastName,
                 Username = user.Username,
                 Role = role,
-                Password = GetHash(user.Password!),
+                Password = _passwordService.GetHash(user.Password!),
             };
 
             await _userRepository.SaveAsync(dbUser);
@@ -158,10 +216,13 @@ namespace Forum.Application.Services
 
             return (dtoUser, string.Empty);
         }
+    }
 
-        private string GetHash(string text)
+    public class PasswordService
+    {
+        public string GetHash(string text)
         {
-            using(var sh256 = SHA256.Create())
+            using (var sh256 = SHA256.Create())
             {
                 var bytes = Encoding.UTF8.GetBytes(text);
                 var hashBytes = sh256.ComputeHash(bytes);
