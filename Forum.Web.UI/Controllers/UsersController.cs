@@ -8,78 +8,188 @@ namespace Forum.Web.UI.Controllers
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        // GET: UsersContrller
-        public ActionResult Index()
+        private readonly IUserClient _userClient;
+
+        public UsersController(IUserClient userClient) 
         {
-            return View(Enumerable.Empty<UserShortViewModel>());
+            _userClient = userClient;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Index()
+        {
+            var users = await _userClient.GetListAsync();
+
+            var viewModel = users.Select(e => new UserShortViewModel
+            {
+                FullName = e.FullName,
+                Id = e.Id,
+                Username = e.Username
+            })
+            .ToArray();
+
+            return View(viewModel);
         }
 
         // GET: UsersContrller/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("Details/{id}")]
+        public async Task<ActionResult> Details([FromRoute] long id)
         {
-            return View();
+            var user = await _userClient.GetAsync(id);
+            
+            if (user is null)
+            {
+                ModelState.AddModelError("",
+                    $"User with such Id ({id}) does not exists");
+
+                return View(new UserDetailsViewModel());
+            }
+
+            var viewModel = new UserDetailsViewModel
+            {
+                Username = user.Username,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Id = user.Id
+            };
+
+            return View(viewModel);
         }
 
-        // GET: UsersContrller/Create
+        [HttpGet("Create")]
         public ActionResult Create()
         {
-            return View();
+            return View(new CreateUserViewModel());
         }
 
-        // POST: UsersContrller/Create
-        [HttpPost]
+        [HttpPost("Create")]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create([FromForm] CreateUserViewModel user)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (!ModelState.IsValid)
+                {
+                    return View(user);
+                }
+
+                var result = await _userClient.CreateAsync(new CreateUserRequest
+                {
+                    ConfirmPassword = user.ConfirmPassword,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = user.Password,
+                    Username = user.Username
+                });
+
+                return RedirectToAction(nameof(Details), result.Id);
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", ex.Message);
+
+                return View(user);
             }
         }
 
-        // GET: UsersContrller/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet("Edit/{id}")]
+        public async Task<ActionResult> Edit([FromRoute] long id)
         {
-            return View();
+            try
+            {
+                var user = await _userClient.GetAsync(id);
+                var viewModel = new UserDetailsViewModel
+                {
+                    Username = user.Username,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Id = user.Id
+                };
+
+                return View(viewModel);
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(new UserDetailsViewModel());
+            } 
         }
 
         // POST: UsersContrller/Edit/5
-        [HttpPost]
+        [HttpPost("Edit/{id}")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(
+            [FromRoute] long id, 
+            [FromForm] UpdateUserViewModel user)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (!ModelState.IsValid)
+                {
+                    return View(user);
+                }
+
+                var result = await _userClient.UpdateAsync(id, new UpdateUserRequest
+                {
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Username = user.Username
+                });
+
+                return RedirectToAction(nameof(Details), result.Id);
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", ex.Message);
+                return View(user);
             }
         }
 
         // GET: UsersContrller/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: UsersContrller/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpGet("Delete/{id}")]
+        public async Task<ActionResult> Delete([FromRoute] long id)
         {
             try
             {
+                var user = await _userClient.GetAsync(id);
+                var viewModel = new UserDetailsViewModel
+                {
+                    Username = user.Username,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Id = user.Id
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View(new UserDetailsViewModel());
+            }
+        }
+
+        [HttpPost("Delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Delete(
+            [FromRoute] long id, 
+            [FromForm] UserDetailsViewModel user)
+        {
+            try
+            {
+                var result = await _userClient.DeleteAsync(id);
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                ModelState.AddModelError("", ex.Message);
+                return View(user);
             }
         }
     }

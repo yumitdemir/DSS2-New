@@ -42,7 +42,7 @@ namespace Forum.Web.UI.Controllers
             try
             {
                 var user = await _authenticationClient
-                    .LoginAsync(new AuthenticateDto
+                    .LoginAsync(new AuthenticateRequest
                 {
                     Username = model.Username,
                     Password = model.Password

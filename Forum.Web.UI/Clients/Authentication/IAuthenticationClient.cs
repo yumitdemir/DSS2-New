@@ -7,6 +7,6 @@ namespace Forum.Web.UI.Clients.Authentication
     {
         [Post("/")]
         Task<UserDetailsResponse> LoginAsync(
-            AuthenticateDto authenticateDto);
+            AuthenticateRequest authenticateDto);
     }
 }

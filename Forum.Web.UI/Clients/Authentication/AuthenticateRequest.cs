@@ -2,7 +2,7 @@
 
 namespace Forum.Web.UI.Clients.Authentication
 {
-    public class AuthenticateDto
+    public class AuthenticateRequest
     {
         [Required]
         public string? Username { get; set; }
