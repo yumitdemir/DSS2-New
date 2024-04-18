@@ -24,7 +24,7 @@ namespace Forum.Application.Services
         }
 
         public async Task<(UserDetailsDto? User, string? Error)> AuthenticateAsync(
-            string? username, 
+            string? username,
             string? password)
         {
             if (string.IsNullOrEmpty(username))
@@ -63,27 +63,26 @@ namespace Forum.Application.Services
             return (userDto, null);
         }
     }
-
     public class UserService
     {
-        private readonly PasswordService _passwordService;
         private readonly IUserRepository _userRepository;
+        private readonly PasswordService _passwordService;
 
         public UserService(
-            PasswordService passwordService, 
-            IUserRepository userRepository) 
+            PasswordService passwordService,
+            IUserRepository userRepository)
         {
             _passwordService = passwordService;
             _userRepository = userRepository;
         }
 
-        public async Task<(long? Id, string Error)> CreateUserAsync(
+        public async Task<User?> CreateUserAsync(
             CreateUserDto user, 
             Role role = Role.User)
         {
             if (!user.ConfirmPassword!.Equals(user.Password))
             {
-                return (null, "Passwords do not match!");
+                return null;
             }
 
             var exist = await _userRepository
@@ -91,7 +90,7 @@ namespace Forum.Application.Services
 
             if (exist)
             {
-                return (null, "Username already exists!");
+                return null;
             }
 
             exist = await _userRepository
@@ -99,7 +98,7 @@ namespace Forum.Application.Services
 
             if (exist)
             {
-                return (null, "Email already exists!");
+                return null;
             }
 
             var dbUser = new User
@@ -111,10 +110,11 @@ namespace Forum.Application.Services
                 Username = user.Username,
                 Role = role,
                 Password = _passwordService.GetHash(user.Password!),
+                UpdateDate = DateTime.Now
             };
 
             await _userRepository.SaveAsync(dbUser);
-            return (dbUser.Id, string.Empty);
+            return dbUser;
         }
 
         public async Task<(long? Id, string Error)> UpdatedUserAsync(
@@ -160,10 +160,13 @@ namespace Forum.Application.Services
         {
             var user = await _userRepository.GetByIdAsync(id!.Value);
 
+
+
             if (user is null)
             {
                 return (null, "Invalid user id!");
             }
+            await _userRepository.DeleteAsync(user);            
 
             user.IsDeleted = true;
 
@@ -216,18 +219,18 @@ namespace Forum.Application.Services
 
             return (dtoUser, string.Empty);
         }
-    }
 
-    public class PasswordService
-    {
-        public string GetHash(string text)
+    }
+        public class PasswordService
         {
-            using (var sh256 = SHA256.Create())
+            public string GetHash(string text)
             {
-                var bytes = Encoding.UTF8.GetBytes(text);
-                var hashBytes = sh256.ComputeHash(bytes);
-                return BitConverter.ToString(hashBytes);
+                using (var sh256 = SHA256.Create())
+                {
+                    var bytes = Encoding.UTF8.GetBytes(text);
+                    var hashBytes = sh256.ComputeHash(bytes);
+                    return BitConverter.ToString(hashBytes);
+                }
             }
         }
-    }
 }

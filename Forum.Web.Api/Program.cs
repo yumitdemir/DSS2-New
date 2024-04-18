@@ -1,3 +1,4 @@
+using System;
 using Forum.Application;
 using Forum.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,7 @@ namespace Forum.Web.Api
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -23,9 +25,12 @@ namespace Forum.Web.Api
 
             builder.Services.AddApplicationLayer();
             builder.Services.AddDatabase(builder.Configuration);
-
+            
+            
+            
             var app = builder.Build();
-        
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

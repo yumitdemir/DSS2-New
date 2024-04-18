@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Forum.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace Forum.Web.Api.Controllers
 {
@@ -13,49 +15,52 @@ namespace Forum.Web.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly DatabaseContext _context;
 
-        public UsersController(UserService userService)
+        public UsersController(UserService userService, DatabaseContext context)
         {
             _userService = userService;
+            _context = context;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListAsync()
+        public async Task<IActionResult> GetAll()
         {
-            var users = await _userService.GetAllUsersAsync();
-            if (!string.IsNullOrEmpty(users.Error))
-            {
-                return BadRequest(users.Error);
-            }
-
-            if (!users.Users.Any())
-            {
-                return NoContent();
-            }
+            var users = await _context.Users.ToListAsync();
+            // if (!string.IsNullOrEmpty(users.Error))
+            // {
+            //     return BadRequest(users.Error);
+            // }
+            //
+            // if (!users.Users.Any())
+            // {
+            //     return NoContent();
+            // }
 
             return Ok(users);
         }
 
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetAsync(
-            [Required, FromRoute] long? userId)
+        public async Task<IActionResult> Get(
+            [Required, FromRoute] long userId)
         {
+        
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values);
             }
-
-            var user = await _userService.GetUsersAsync(userId);
-            if (!string.IsNullOrEmpty(user.Error))
-            {
-                return NotFound(user.Error);
-            }
-
+            
+            var user = await _context.Users.FindAsync(userId);
+            // if (!string.IsNullOrEmpty(user.Error))
+            // {
+            //     return NotFound(user.Error);
+            // }
+            
             return Ok(user);
         }
 
         [HttpPost("{role}")]
-        public async Task<IActionResult> CreateAsync(
+        public async Task<IActionResult> Create(
             [FromBody, Required] CreateUserDto user,
             [FromRoute] Role role)
         {
@@ -63,20 +68,18 @@ namespace Forum.Web.Api.Controllers
             {
                 return BadRequest(ModelState.Values);
             }
-
+        
             var userId = await _userService.CreateUserAsync(user, role);
-            if (!string.IsNullOrEmpty(userId.Error))
-            {
-                return BadRequest(userId.Error);
-            }
-
+         
+        
             return CreatedAtAction(
-                actionName: nameof(GetAsync),
+                actionName: nameof(Get),
+                routeValues: new { userId = userId.Id },
                 value: userId);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync(
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> Update(
             [Required, FromRoute] long? userId,
             [FromBody, Required] UpdateUserDto user)
         {
@@ -92,6 +95,7 @@ namespace Forum.Web.Api.Controllers
             }
 
             var userDto = await _userService.GetUsersAsync(userId);
+            
             if (!string.IsNullOrEmpty(userDto.Error))
             {
                 return BadRequest(userDto.Error);
@@ -101,7 +105,7 @@ namespace Forum.Web.Api.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(
+        public async Task<IActionResult> Delete(
            [Required, FromRoute] long? userId)
         {
             if (!ModelState.IsValid)

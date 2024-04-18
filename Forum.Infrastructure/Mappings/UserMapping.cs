@@ -29,7 +29,7 @@ namespace Forum.Infrastructure.Mappings
 
             builder.Property(e => e.Password)
                 .HasColumnName("password")
-                .HasMaxLength(32)
+                .HasMaxLength(128)
                 .IsRequired();
 
             builder.Property(e => e.FirstName)
@@ -49,12 +49,6 @@ namespace Forum.Infrastructure.Mappings
                 .HasConversion<string>()
                 .HasDefaultValue(Role.User);
 
-            builder.Property(e => e.UpdateDate)
-                .HasColumnName("update_date");
-
-            builder.Property(e => e.CreateDate)
-               .HasColumnName("create_date");
-
             builder.HasMany(e => e.Topics)
                 .WithOne(e => e.Creator)
                 .HasForeignKey(e => e.CreatorId);
@@ -64,7 +58,7 @@ namespace Forum.Infrastructure.Mappings
                 .HasForeignKey(e => e.CreatorId);
 
             builder.HasIndex(e => e.Username)
-                .HasDatabaseName("UX_public_users_username")
+                .HasDatabaseName("UX_public_users_username")            
                 .IsUnique();
 
             builder.HasIndex(e => e.Email)
