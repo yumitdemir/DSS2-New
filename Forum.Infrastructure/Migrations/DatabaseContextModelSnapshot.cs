@@ -39,11 +39,13 @@ namespace Forum.Infrastructure.Migrations
                     b.Property<int>("Likes")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Text")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<long?>("TopicId")
                         .HasColumnType("bigint");
@@ -57,7 +59,7 @@ namespace Forum.Infrastructure.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Forum.Domain.Models.Topic", b =>
@@ -77,11 +79,13 @@ namespace Forum.Infrastructure.Migrations
                     b.Property<int>("Likes")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Subject")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
@@ -90,7 +94,7 @@ namespace Forum.Infrastructure.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Topic");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("Forum.Domain.Models.User", b =>
@@ -169,11 +173,13 @@ namespace Forum.Infrastructure.Migrations
                 {
                     b.HasOne("Forum.Domain.Models.User", "Creator")
                         .WithMany("Comments")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Forum.Domain.Models.Topic", "Topic")
                         .WithMany("Comments")
-                        .HasForeignKey("TopicId");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Creator");
 
@@ -184,7 +190,8 @@ namespace Forum.Infrastructure.Migrations
                 {
                     b.HasOne("Forum.Domain.Models.User", "Creator")
                         .WithMany("Topics")
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Creator");
                 });

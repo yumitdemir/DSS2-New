@@ -28,59 +28,21 @@ namespace Forum.Web.UI.Controllers
 
         public IActionResult Index()
         {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return RedirectToAction(nameof(AuthController.Login), "Auth");
+            }
+            
+            
+
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(nameof(Index), model);
-            }
 
-            try
-            {
-                var user = await _authenticationClient
-                    .LoginAsync(new AuthenticateRequest
-                {
-                    Username = model.Username,
-                    Password = model.Password
-                });
-
-                var identity = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                    new Claim(ClaimTypes.Email, user.Email!),
-                    new Claim(ClaimTypes.Role, user.Role.ToString()!),
-                    new Claim(ClaimTypes.NameIdentifier, user.Username!),
-                    new Claim(ClaimTypes.Sid, user.Id.ToString()!),
-                }, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                ModelState.AddModelError("", "Invalid username or password");
-                
-                return View(nameof(Index), model);
-            }
-
-            return RedirectToAction(
-                nameof(UsersController.Index), 
-                "Users");
-        }
 
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

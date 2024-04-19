@@ -8,5 +8,6 @@
         public User? Creator { get; set; }
         public long? CreatorId { get; set; }
         public Topic? Topic { get; set; }
+        public long? TopicId { get; set; }
     }
 }

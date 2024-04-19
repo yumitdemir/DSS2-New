@@ -11,9 +11,10 @@ namespace Forum.Web.UI.Clients.Users
         Task<UserDetailsResponse> GetAsync(
             long? userId);
 
-        [Post("/")]
+        [Post("/{role}")]
         Task<UserDetailsResponse> CreateAsync(
-            [Body] CreateUserRequest user);
+            [Body] CreateUserRequest user,
+            string role);
 
         [Put("/{userId}")]
         Task<UserDetailsResponse> UpdateAsync(

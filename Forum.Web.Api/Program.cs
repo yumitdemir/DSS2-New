@@ -26,6 +26,7 @@ namespace Forum.Web.Api
             builder.Services.AddApplicationLayer();
             builder.Services.AddDatabase(builder.Configuration);
             
+
             
             
             var app = builder.Build();

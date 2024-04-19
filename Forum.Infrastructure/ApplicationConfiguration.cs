@@ -32,6 +32,8 @@ namespace Forum.Infrastructure
             });
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ITopicRepository, TopicRepository>();
 
             return services;
         }

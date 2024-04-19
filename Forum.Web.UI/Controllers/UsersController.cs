@@ -76,13 +76,11 @@ namespace Forum.Web.UI.Controllers
 
                 var result = await _userClient.CreateAsync(new CreateUserRequest
                 {
-                    ConfirmPassword = user.ConfirmPassword,
+                    Username = user.Username,
                     Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
                     Password = user.Password,
-                    Username = user.Username
-                });
+                    ConfirmPassword = user.ConfirmPassword
+                }, "User");
 
                 return RedirectToAction(nameof(Details), result.Id);
             }
@@ -94,29 +92,29 @@ namespace Forum.Web.UI.Controllers
             }
         }
 
-        [HttpGet("Edit/{id}")]
-        public async Task<ActionResult> Edit([FromRoute] long id)
-        {
-            try
-            {
-                var user = await _userClient.GetAsync(id);
-                var viewModel = new UserDetailsViewModel
-                {
-                    Username = user.Username,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Id = user.Id
-                };
-
-                return View(viewModel);
-            }
-            catch(Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-                return View(new UserDetailsViewModel());
-            } 
-        }
+        // [HttpGet("Edit/{id}")]
+        // public async Task<ActionResult> Edit([FromRoute] long id)
+        // {
+        //     try
+        //     {
+        //         var user = await _userClient.GetAsync(id);
+        //         var viewModel = new UserDetailsViewModel
+        //         {
+        //             Username = user.Username,
+        //             Email = user.Email,
+        //             FirstName = user.FirstName,
+        //             LastName = user.LastName,
+        //             Id = user.Id
+        //         };
+        //
+        //         return View(viewModel);
+        //     }
+        //     catch(Exception ex)
+        //     {
+        //         ModelState.AddModelError("", ex.Message);
+        //         return View(new UserDetailsViewModel());
+        //     } 
+        // }
 
         // POST: UsersContrller/Edit/5
         [HttpPost("Edit/{id}")]
