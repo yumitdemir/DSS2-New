@@ -1,0 +1,39 @@
+﻿@model Forum.Domain.Models.Comment
+
+@{
+    ViewBag.Title = "Edit Comment";
+    Layout = "_Layout";
+}
+
+<h2>Edit Comment</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Text" class="control-label"></label>
+        <input asp-for="Text" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Status" class="control-label"></label>
+        <input asp-for="Status" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Likes" class="control-label"></label>
+        <input asp-for="Likes" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="CreatorId" class="control-label"></label>
+        <input asp-for="CreatorId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="TopicId" class="control-label"></label>
+        <input asp-for="TopicId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

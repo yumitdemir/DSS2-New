@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Forum.Domain.Models.Comment>
+
+@{
+    ViewBag.Title = "Comments";
+    Layout = "_Layout";
+}
+
+<h2>Comments</h2>
+
+<p>
+    <a asp-action="Create" >Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Text)</th>
+            <th>@Html.DisplayNameFor(model => model.Status)</th>
+            <th>@Html.DisplayNameFor(model => model.Likes)</th>
+            <th>@Html.DisplayNameFor(model => model.CreatorId)</th>
+            <th>@Html.DisplayNameFor(model => model.TopicId)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Text)</td>
+            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+            <td>@Html.DisplayFor(modelItem => item.Likes)</td>
+            <td>@Html.DisplayFor(modelItem => item.CreatorId)</td>
+            <td>@Html.DisplayFor(modelItem => item.TopicId)</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
