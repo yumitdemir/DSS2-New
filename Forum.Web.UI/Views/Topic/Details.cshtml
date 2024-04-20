@@ -40,7 +40,6 @@
     </dl>
 </div>
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </p>
 <a asp-action="Create" asp-controller="Comment" asp-route-id="@Model.Id" class="btn btn-primary">Add a Comment</a>
@@ -49,7 +48,7 @@
 @foreach (var comment in Model.Comments)
 {
     <div>
-    <h4>@(comment.Creator?.Id )</h4>
+    <h4>@(comment.Creator?.Username )</h4>
     <p>@comment.Text</p>
 </div>
 }

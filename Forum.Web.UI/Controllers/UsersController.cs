@@ -83,8 +83,7 @@ namespace Forum.Web.UI.Controllers
                     ConfirmPassword = user.ConfirmPassword
                 }, "User");
 
-                return RedirectToAction(nameof(Details), result.Id);
-            }
+                return RedirectToAction(nameof(Details), new { id = result.Id });            }
             catch(Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
