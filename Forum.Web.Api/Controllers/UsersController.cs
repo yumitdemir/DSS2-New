@@ -27,15 +27,7 @@ namespace Forum.Web.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var users = await _context.Users.ToListAsync();
-            // if (!string.IsNullOrEmpty(users.Error))
-            // {
-            //     return BadRequest(users.Error);
-            // }
-            //
-            // if (!users.Users.Any())
-            // {
-            //     return NoContent();
-            // }
+
 
             return Ok(users);
         }
@@ -51,10 +43,7 @@ namespace Forum.Web.Api.Controllers
             }
             
             var user = await _context.Users.FindAsync(userId);
-            // if (!string.IsNullOrEmpty(user.Error))
-            // {
-            //     return NotFound(user.Error);
-            // }
+
             
             return Ok(user);
         }

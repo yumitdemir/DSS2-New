@@ -1,11 +1,12 @@
-﻿using Forum.Web.UI.Clients.Users;
+﻿using Forum.Application.Dto;
+using Forum.Web.UI.Clients.Users;
 using Forum.Web.UI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Forum.Web.UI.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, User")]
     public class UsersController : Controller
     {
         private readonly IUserClient _userClient;
@@ -92,29 +93,27 @@ namespace Forum.Web.UI.Controllers
             }
         }
 
-        // [HttpGet("Edit/{id}")]
-        // public async Task<ActionResult> Edit([FromRoute] long id)
-        // {
-        //     try
-        //     {
-        //         var user = await _userClient.GetAsync(id);
-        //         var viewModel = new UserDetailsViewModel
-        //         {
-        //             Username = user.Username,
-        //             Email = user.Email,
-        //             FirstName = user.FirstName,
-        //             LastName = user.LastName,
-        //             Id = user.Id
-        //         };
-        //
-        //         return View(viewModel);
-        //     }
-        //     catch(Exception ex)
-        //     {
-        //         ModelState.AddModelError("", ex.Message);
-        //         return View(new UserDetailsViewModel());
-        //     } 
-        // }
+        [HttpGet("Edit/{id}")]
+        public async Task<ActionResult> Edit([FromRoute] long id)
+        {
+            UserDetailsResponse user;
+            try
+            {
+                user = await _userClient.GetAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+
+            return View(user);
+        }
 
         // POST: UsersContrller/Edit/5
         [HttpPost("Edit/{id}")]
@@ -127,7 +126,7 @@ namespace Forum.Web.UI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return View(user);
+                    return RedirectToAction(nameof(Index));
                 }
 
                 var result = await _userClient.UpdateAsync(id, new UpdateUserRequest
@@ -138,12 +137,11 @@ namespace Forum.Web.UI.Controllers
                     Username = user.Username
                 });
 
-                return RedirectToAction(nameof(Details), result.Id);
+                return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View(user);
+                return RedirectToAction(nameof(Index));
             }
         }
 
