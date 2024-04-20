@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Security.Claims
 @model IEnumerable<Forum.Infrastructure.TopicDetailDto>?
 
 @{
@@ -30,9 +31,13 @@
             <td>@Html.DisplayFor(modelItem => item.Likes)</td>
             <td>@Html.DisplayFor(modelItem => item.CreatorId)</td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @if (long.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId) && userId == item.CreatorId)
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                }
+          
             </td>
         </tr>
     }

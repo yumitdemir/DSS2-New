@@ -19,7 +19,8 @@ namespace Forum.Infrastructure.Repositories
         {
             return await _context.Topics
                 .Include(t => t.Creator)
-                .Include(t => t.Comments) // Include the comments
+                .Include(t => t.Comments) 
+                .ThenInclude(c => c.Creator) 
                 .ToListAsync();
         }
 
@@ -27,7 +28,8 @@ namespace Forum.Infrastructure.Repositories
         {
             return await _context.Topics
                 .Include(t => t.Creator)
-                .Include(t => t.Comments) // Include the comments
+                .Include(t => t.Comments)
+                .ThenInclude(c => c.Creator) 
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
         public async Task<Topic> AddAsync(Topic topic)

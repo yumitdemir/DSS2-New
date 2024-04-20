@@ -100,7 +100,7 @@ namespace Forum.Web.UI.Controllers
                     new Claim(ClaimTypes.Email, result.Email!),
                     new Claim(ClaimTypes.Role, result.Role.ToString()!),
                     new Claim(ClaimTypes.NameIdentifier, result.Id.ToString()!),
-                    new Claim(ClaimTypes.Sid, result.Id.ToString()!),
+                    new Claim(ClaimTypes.Sid, result.Id.ToString()),
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 await HttpContext.SignInAsync(new ClaimsPrincipal(identity));

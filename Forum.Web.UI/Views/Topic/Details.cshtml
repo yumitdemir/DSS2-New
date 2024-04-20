@@ -49,7 +49,7 @@
 @foreach (var comment in Model.Comments)
 {
     <div>
-    <h4>@comment.Creator.Username</h4>
+    <h4>@(comment.Creator?.Id )</h4>
     <p>@comment.Text</p>
 </div>
 }
