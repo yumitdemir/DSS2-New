@@ -17,12 +17,16 @@ namespace Forum.Infrastructure.Repositories
 
         public async Task<IEnumerable<Comment>> GetAllAsync()
         {
-            return await _context.Comments.ToListAsync();
+            return await _context.Comments
+                .Include(c => c.Creator)
+                .ToListAsync();
         }
 
         public async Task<Comment?> GetByIdAsync(long id)
         {
-            return await _context.Comments.FindAsync(id);
+            return await _context.Comments
+                .Include(c => c.Creator)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Comment> AddAsync(Comment comment)

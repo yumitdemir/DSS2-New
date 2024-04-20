@@ -1,42 +1,54 @@
-﻿using Forum.Application.Repositories;
-using Forum.Domain.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using Forum.Application.Repositories;
+using Forum.Domain.Models;
+using Forum.Infrastructure;
 
-namespace Forum.Application.Services
+public class CommentService
 {
-    public class CommentService
+    private readonly ICommentRepository _commentRepository;
+    private readonly IMapper _mapper;
+
+    public CommentService(ICommentRepository commentRepository, IMapper mapper)
     {
-        private readonly ICommentRepository _commentRepository;
+        _commentRepository = commentRepository;
+        _mapper = mapper;
+    }
 
-        public CommentService(ICommentRepository commentRepository)
-        {
-            _commentRepository = commentRepository;
-        }
+    public async Task<IEnumerable<CommentDetailDto>> GetAllCommentsAsync()
+    {
+        var comments = await _commentRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<CommentDetailDto>>(comments);
+    }
 
-        public async Task<IEnumerable<Comment>> GetAllCommentsAsync()
-        {
-            return await _commentRepository.GetAllAsync();
-        }
+    public async Task<CommentDetailDto?> GetCommentByIdAsync(long id)
+    {
+        var comment = await _commentRepository.GetByIdAsync(id);
+        return comment == null ? null : _mapper.Map<CommentDetailDto>(comment);
+    }
 
-        public async Task<Comment?> GetCommentByIdAsync(long id)
-        {
-            return await _commentRepository.GetByIdAsync(id);
-        }
+    public async Task<CommentDetailDto> AddCommentAsync(CreateCommentDto createCommentDto)
+    {
+        var comment = _mapper.Map<Comment>(createCommentDto);
+        var addedComment = await _commentRepository.AddAsync(comment);
+        return _mapper.Map<CommentDetailDto>(addedComment);
+    }
 
-        public async Task<Comment> AddCommentAsync(Comment comment)
+    public async Task<CommentDetailDto?> UpdateCommentAsync(long id, UpdateCommentDto updateCommentDto)
+    {
+        var existingComment = await _commentRepository.GetByIdAsync(id);
+        if (existingComment == null)
         {
-            return await _commentRepository.AddAsync(comment);
+            return null;
         }
+        _mapper.Map(updateCommentDto, existingComment);
+        var updatedComment = await _commentRepository.UpdateAsync(existingComment);
+        return _mapper.Map<CommentDetailDto>(updatedComment);
+    }
 
-        public async Task<Comment> UpdateCommentAsync(Comment comment)
-        {
-            return await _commentRepository.UpdateAsync(comment);
-        }
-
-        public async Task DeleteCommentAsync(long id)
-        {
-            await _commentRepository.DeleteAsync(id);
-        }
+    public async Task DeleteCommentAsync(long id)
+    {
+        await _commentRepository.DeleteAsync(id);
     }
 }
