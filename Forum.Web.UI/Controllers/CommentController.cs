@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Forum.Application.Dto;
 using Forum.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
@@ -29,8 +30,9 @@ public class CommentController : Controller
     }
 
     // GET: Comment/Create
-    public IActionResult Create()
+    public IActionResult Create(int id)
     {
+        ViewBag.TopicId = id;
         return View();
     }
 
@@ -65,6 +67,8 @@ public class CommentController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, UpdateCommentDto comment)
     {
+        // check if the user is the owner of the comment check updateCommentdto for the user id
+
         var content = new StringContent(JsonConvert.SerializeObject(comment), Encoding.UTF8, "application/json");
         var response = await _httpClient.PutAsync($"api/Comment/{id}", content);
 

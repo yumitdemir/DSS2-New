@@ -1,4 +1,6 @@
-﻿@model CreateCommentDto
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model CreateCommentDto
 
 @{
     ViewBag.Title = "Create Comment";
@@ -8,28 +10,17 @@
 <h2>Create Comment</h2>
 
 <form asp-action="Create" method="post">
+    <input type="hidden" asp-for="Status" class="form-control" value="0" />
+    <input type="hidden" asp-for="CreatorId" class="form-control" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+    <input type="hidden" asp-for="Likes" class="form-control" value="0"/>
+<input type="hidden" asp-for="TopicId" class="form-control" value="@ViewBag.TopicId" />
     <div class="form-group">
         <label asp-for="Text" class="control-label"></label>
-        <input asp-for="Text" class="form-control" />
+        <input asp-for="Text" class="form-control"/>
     </div>
+
     <div class="form-group">
-        <label asp-for="Status" class="control-label"></label>
-        <input asp-for="Status" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Likes" class="control-label"></label>
-        <input asp-for="Likes" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="CreatorId" class="control-label"></label>
-        <input asp-for="CreatorId" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="TopicId" class="control-label"></label>
-        <input asp-for="TopicId" class="form-control" />
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <input type="submit" value="Create" class="btn btn-primary"/>
     </div>
 </form>
 

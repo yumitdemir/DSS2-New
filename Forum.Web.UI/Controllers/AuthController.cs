@@ -54,8 +54,8 @@ namespace Forum.Web.UI.Controllers
                     new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
                     new Claim(ClaimTypes.Email, user.Email!),
                     new Claim(ClaimTypes.Role, user.Role.ToString()!),
-                    new Claim(ClaimTypes.NameIdentifier, user.Username!),
-                    new Claim(ClaimTypes.Sid, user.Id.ToString()!),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Sid, user.Id.ToString()),
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
@@ -99,7 +99,7 @@ namespace Forum.Web.UI.Controllers
                     new Claim(ClaimTypes.Name, $"{result.FirstName} {result.LastName}"),
                     new Claim(ClaimTypes.Email, result.Email!),
                     new Claim(ClaimTypes.Role, result.Role.ToString()!),
-                    new Claim(ClaimTypes.NameIdentifier, result.Username!),
+                    new Claim(ClaimTypes.NameIdentifier, result.Id.ToString()!),
                     new Claim(ClaimTypes.Sid, result.Id.ToString()!),
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
 
