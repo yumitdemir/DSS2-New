@@ -17,14 +17,19 @@ namespace Forum.Infrastructure.Repositories
 
         public async Task<IEnumerable<Topic>> GetAllAsync()
         {
-            return await _context.Topics.ToListAsync();
+            return await _context.Topics
+                .Include(t => t.Creator)
+                .Include(t => t.Comments) // Include the comments
+                .ToListAsync();
         }
 
         public async Task<Topic?> GetByIdAsync(long id)
         {
-            return await _context.Topics.FindAsync(id);
+            return await _context.Topics
+                .Include(t => t.Creator)
+                .Include(t => t.Comments) // Include the comments
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
-
         public async Task<Topic> AddAsync(Topic topic)
         {
             _context.Topics.Add(topic);
