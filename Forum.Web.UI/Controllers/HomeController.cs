@@ -33,9 +33,7 @@ namespace Forum.Web.UI.Controllers
                 return RedirectToAction(nameof(AuthController.Login), "Auth");
             }
             
-            
-
-            return View();
+            return RedirectToAction(nameof(TopicController.Index), "Topic");
         }
 
 

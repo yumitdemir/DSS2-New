@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<Forum.Domain.Models.Topic>
+@model IEnumerable<Forum.Infrastructure.TopicDetailDto>
 
 @{
     ViewBag.Title = "Topics";
@@ -17,7 +17,7 @@
             <th>@Html.DisplayNameFor(model => model.Subject)</th>
             <th>@Html.DisplayNameFor(model => model.Status)</th>
             <th>@Html.DisplayNameFor(model => model.Likes)</th>
-            <th>@Html.DisplayNameFor(model => model.CreatorId)</th>
+            <th>@Html.DisplayNameFor(model => model.Creator.Username)</th>
             <th></th>
         </tr>
     </thead>
@@ -28,7 +28,7 @@
             <td>@Html.DisplayFor(modelItem => item.Subject)</td>
             <td>@Html.DisplayFor(modelItem => item.Status)</td>
             <td>@Html.DisplayFor(modelItem => item.Likes)</td>
-            <td>@Html.DisplayFor(modelItem => item.CreatorId)</td>
+            <td>@Html.DisplayFor(modelItem => item.Creator.Username)</td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

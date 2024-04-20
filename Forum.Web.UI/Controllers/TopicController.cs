@@ -1,5 +1,8 @@
 ﻿using System.Text;
+using Forum.Application.Dto;
 using Forum.Domain.Models;
+using Forum.Infrastructure;
+using Forum.Web.Api.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -23,7 +26,7 @@ public class TopicController : Controller
     {
         var response = await _httpClient.GetAsync("api/Topic");
         var content = await response.Content.ReadAsStringAsync();
-        var topics = JsonConvert.DeserializeObject<List<Topic>>(content);
+        var topics = JsonConvert.DeserializeObject<List<TopicDetailDto>>(content);
 
         return View(topics);
     }
@@ -37,7 +40,7 @@ public class TopicController : Controller
     // POST: Topic/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(TopicDto topic)
+    public async Task<IActionResult> Create(CreateTopicDto topic)
     {
         var content = new StringContent(JsonConvert.SerializeObject(topic), Encoding.UTF8, "application/json");
         var response = await _httpClient.PostAsync("api/Topic", content);
@@ -55,15 +58,23 @@ public class TopicController : Controller
     {
         var response = await _httpClient.GetAsync($"api/Topic/{id}");
         var content = await response.Content.ReadAsStringAsync();
-        var topic = JsonConvert.DeserializeObject<Topic>(content);
+        var topic = JsonConvert.DeserializeObject<Forum.Infrastructure.TopicDetailDto>(content);
 
-        return View(topic);
+        var updateTopicDto = new UpdateTopicDto
+        {
+            Subject = topic!.Subject,
+            Status = topic.Status,
+            Likes = topic.Likes,
+            CreatorId = topic.CreatorId
+        };
+
+        return View(updateTopicDto);
     }
 
     // POST: Topic/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, TopicDto topic)
+    public async Task<IActionResult> Edit(int id, UpdateTopicDto topic)
     {
         var content = new StringContent(JsonConvert.SerializeObject(topic), Encoding.UTF8, "application/json");
         var response = await _httpClient.PutAsync($"api/Topic/{id}", content);
@@ -73,7 +84,7 @@ public class TopicController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View();
+        return View(topic);
     }
 
     // GET: Topic/Details/5
@@ -81,7 +92,7 @@ public class TopicController : Controller
     {
         var response = await _httpClient.GetAsync($"api/Topic/{id}");
         var content = await response.Content.ReadAsStringAsync();
-        var topic = JsonConvert.DeserializeObject<Topic>(content);
+        var topic = JsonConvert.DeserializeObject<TopicDetailDto>(content);
 
         return View(topic);
     }
@@ -91,7 +102,7 @@ public class TopicController : Controller
     {
         var response = await _httpClient.GetAsync($"api/Topic/{id}");
         var content = await response.Content.ReadAsStringAsync();
-        var topic = JsonConvert.DeserializeObject<Topic>(content);
+        var topic = JsonConvert.DeserializeObject<TopicDetailDto>(content);
 
         return View(topic);
     }
