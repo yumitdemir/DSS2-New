@@ -5,7 +5,7 @@ using Forum.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class CommentController : ControllerBase
 {
     private readonly CommentService _commentService;

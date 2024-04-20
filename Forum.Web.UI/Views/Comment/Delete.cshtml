@@ -1,4 +1,4 @@
-﻿@model Forum.Domain.Models.Comment
+﻿@model Forum.Infrastructure.CommentDetailDto
 
 @{
     ViewBag.Title = "Delete Comment";
@@ -31,10 +31,10 @@
             @Html.DisplayFor(model => model.Likes)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatorId)
+            @Html.DisplayNameFor(model => model.Creator.Username)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatorId)
+            @Html.DisplayFor(model => model.Creator.Username)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TopicId)

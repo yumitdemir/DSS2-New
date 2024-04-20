@@ -1,5 +1,6 @@
 ﻿using System.Text;
-using Forum.Domain.Models;
+using Forum.Application.Dto;
+using Forum.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -10,20 +11,19 @@ namespace Forum.Web.UI.Controllers;
 [Route("[controller]/[action]")]
 public class CommentController : Controller
 {
-    private readonly HttpClient _httpClient;
-
-    public CommentController(IHttpClientFactory httpClientFactory)
-    {
-        _httpClient = httpClientFactory.CreateClient();
-        _httpClient.BaseAddress = new Uri("http://localhost:5038/");
-    }
+    private readonly HttpClient _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5038/") };
 
     // GET: Comment
     public async Task<IActionResult> Index()
     {
         var response = await _httpClient.GetAsync("api/Comment");
         var content = await response.Content.ReadAsStringAsync();
-        var comments = JsonConvert.DeserializeObject<List<Comment>>(content);
+        var comments = JsonConvert.DeserializeObject<List<CommentDetailDto>>(content);
+
+        if (comments == null)
+        {
+            comments = new List<CommentDetailDto>();
+        }
 
         return View(comments);
     }
@@ -37,7 +37,7 @@ public class CommentController : Controller
     // POST: Comment/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Comment comment)
+    public async Task<IActionResult> Create(CreateCommentDto comment)
     {
         var content = new StringContent(JsonConvert.SerializeObject(comment), Encoding.UTF8, "application/json");
         var response = await _httpClient.PostAsync("api/Comment", content);
@@ -55,7 +55,7 @@ public class CommentController : Controller
     {
         var response = await _httpClient.GetAsync($"api/Comment/{id}");
         var content = await response.Content.ReadAsStringAsync();
-        var comment = JsonConvert.DeserializeObject<Comment>(content);
+        var comment = JsonConvert.DeserializeObject<UpdateCommentDto>(content);
 
         return View(comment);
     }
@@ -63,7 +63,7 @@ public class CommentController : Controller
     // POST: Comment/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Comment comment)
+    public async Task<IActionResult> Edit(int id, UpdateCommentDto comment)
     {
         var content = new StringContent(JsonConvert.SerializeObject(comment), Encoding.UTF8, "application/json");
         var response = await _httpClient.PutAsync($"api/Comment/{id}", content);
@@ -81,7 +81,7 @@ public class CommentController : Controller
     {
         var response = await _httpClient.GetAsync($"api/Comment/{id}");
         var content = await response.Content.ReadAsStringAsync();
-        var comment = JsonConvert.DeserializeObject<Comment>(content);
+        var comment = JsonConvert.DeserializeObject<CommentDetailDto>(content);
 
         return View(comment);
     }
@@ -91,7 +91,7 @@ public class CommentController : Controller
     {
         var response = await _httpClient.GetAsync($"api/Comment/{id}");
         var content = await response.Content.ReadAsStringAsync();
-        var comment = JsonConvert.DeserializeObject<Comment>(content);
+        var comment = JsonConvert.DeserializeObject<CommentDetailDto>(content);
 
         return View(comment);
     }
@@ -111,4 +111,3 @@ public class CommentController : Controller
         return View();
     }
 }
-
